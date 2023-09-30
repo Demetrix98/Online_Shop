@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Entiities
+namespace API.Entities
 {
     [Table("BasketItems")]
     public class BasketItem

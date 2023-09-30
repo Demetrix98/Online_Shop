@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
-using API.Entiities;
+using API.Entities;
 using API.Extensions;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -16,11 +12,11 @@ namespace API.Controllers
 {
     public class AccountController : BaseApiController
     {
-         private readonly UserManager<User> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly TokenService _tokenService;
         private readonly StoreContext _context;
 
-        public AccountController(UserManager<User> userManager, TokenService tokenService, 
+        public AccountController(UserManager<User> userManager, TokenService tokenService,
             StoreContext context)
         {
             _context = context;
@@ -92,6 +88,16 @@ namespace API.Controllers
             };
         }
 
+        [Authorize]
+        [HttpGet("savedAddress")]
+        public async Task<ActionResult<UserAddress>> GetSavedAddress()
+        {
+            return await _userManager.Users
+                .Where(x => x.UserName == User.Identity.Name)
+                .Select(user => user.Address)
+                .FirstOrDefaultAsync();
+        }
+
         private async Task<Basket> RetrieveBasket(string buyerId)
         {
             if (string.IsNullOrEmpty(buyerId))
@@ -105,6 +111,5 @@ namespace API.Controllers
                 .ThenInclude(p => p.Product)
                 .FirstOrDefaultAsync(basket => basket.BuyerId == buyerId);
         }
-
     }
 }
